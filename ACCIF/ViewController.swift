@@ -59,10 +59,10 @@ class ViewController: UIViewController, ARSKViewDelegate {
     // MARK: - ARSKViewDelegate
     
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
-        let ghostId = randomInt(min: 1, max: 6)
+        let ghostId = randomInt(min: 1, max: 3)
         
-        let node = SKSpriteNode(imageNamed: "ghost\(ghostId)")
-        node.name = "ghost"
+        let node = SKSpriteNode(imageNamed: "royal\(ghostId)")
+        node.name = "prize"
         
         return node
     }

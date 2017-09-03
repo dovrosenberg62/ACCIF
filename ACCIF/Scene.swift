@@ -10,35 +10,35 @@ import SpriteKit
 import ARKit
 
 class Scene: SKScene {
-    let ghostsLabel = SKLabelNode(text: "Ghosts")
-    let numberOfGhostsLabel = SKLabelNode(text: "0")
+    let spriteLabel = SKLabelNode(text: "Prizes")
+    let numberOfPrizesLabel = SKLabelNode(text: "0")
     var creationTime : TimeInterval = 0
-    var ghostCount = 0 {
+    var prizeCount = 0 {
         didSet {
-            self.numberOfGhostsLabel.text = "\(ghostCount)"
+            self.numberOfPrizesLabel.text = "\(prizeCount)"
         }
     }
     
-    let killSound = SKAction.playSoundFileNamed("ghost", waitForCompletion: false)
+    let killSound = SKAction.playSoundFileNamed("Fog_Horn", waitForCompletion: false)
     
     override func didMove(to view: SKView) {
-        ghostsLabel.fontSize = 20
-        ghostsLabel.fontName = "DevanagariSangamMN-Bold"
-        ghostsLabel.color = .white
-        ghostsLabel.position = CGPoint(x: 40, y: 50)
-        addChild(ghostsLabel)
+        spriteLabel.fontSize = 20
+        spriteLabel.fontName = "DevanagariSangamMN-Bold"
+        spriteLabel.color = .white
+        spriteLabel.position = CGPoint(x: 40, y: 50)
+        addChild(spriteLabel)
         
-        numberOfGhostsLabel.fontSize = 30
-        numberOfGhostsLabel.fontName = "DevanagariSangamMN-Bold"
-        numberOfGhostsLabel.color = .white
-        numberOfGhostsLabel.position = CGPoint(x: 40, y: 10)
-        addChild(numberOfGhostsLabel)
+        numberOfPrizesLabel.fontSize = 30
+        numberOfPrizesLabel.fontName = "DevanagariSangamMN-Bold"
+        numberOfPrizesLabel.color = .white
+        numberOfPrizesLabel.position = CGPoint(x: 40, y: 10)
+        addChild(numberOfPrizesLabel)
     }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         if currentTime > creationTime {
-            createGhostAnchor()
+            createAnchor()
             creationTime = currentTime + TimeInterval(randomFloat(min: 3.0, max: 6.0))
         }
     }
@@ -47,7 +47,7 @@ class Scene: SKScene {
         return (Float(arc4random()) / 0xFFFFFFFF) * (max - min) + min
     }
     
-    func createGhostAnchor(){
+    func createAnchor(){
         guard let sceneView = self.view as? ARSKView else {
             return
         }
@@ -64,7 +64,7 @@ class Scene: SKScene {
         let transform = simd_mul(rotation, translation)
         let anchor = ARAnchor(transform: transform)
         sceneView.session.add(anchor: anchor)
-        ghostCount += 1
+        prizeCount += 1
         
     }
     
@@ -75,7 +75,7 @@ class Scene: SKScene {
         let location = touch.location(in: self)
         let hit = nodes(at: location)
         if let node = hit.first {
-            if node.name == "ghost" {
+            if node.name == "prize" {
                 let fadeOut = SKAction.fadeOut(withDuration: 0.5)
                 let remove = SKAction.removeFromParent()
                 
@@ -84,11 +84,13 @@ class Scene: SKScene {
                 // Create an action sequence
                 let sequenceAction = SKAction.sequence([groupKillingActions, remove])
                 
-                // Excecute the actions
+                // Execute the actions
                 node.run(sequenceAction)
                 
+                // TODO store a reference to the item clicked on
+                
                 // Update the counter
-                ghostCount -= 1
+                prizeCount -= 1
             }
         }
     }
